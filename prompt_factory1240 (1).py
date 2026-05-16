@@ -1340,12 +1340,12 @@ def _polish_with_llm(llm: LLMClient, raw_text: str) -> str:
 
 
 def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[DatasetExample]:
-    TARGET = 100
+    TARGET = 1000
     PLAN = [
-        ("positive_clear", 35),
-        ("implicit", 25),
-        ("hard_negative", 25),
-        ("ambiguous", 15),
+        ("positive_clear", 350),
+        ("implicit", 250),
+        ("hard_negative", 250),
+        ("ambiguous", 150),
     ]
 
     def pick_combo() -> list[str]:
@@ -1629,5 +1629,5 @@ if __name__ == "__main__":
         )
         llm = MockLLMClient()
 
-    examples = generate_dataset(llm, output_path="dataset.json")
+    examples = generate_dataset(llm, output_path="dataset1240.json")
     print(f"\n[DONE] Generated {len(examples)} synthetic examples.")

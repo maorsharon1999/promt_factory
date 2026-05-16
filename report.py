@@ -23,6 +23,7 @@ VISUALS_DIR = BASE_DIR / "visuals"
 _VISUAL_CAPTIONS: dict[str, str] = {
     "01_label_marginals.png": "Marginal frequency of each PTSD symptom label, sorted descending.",
     "02_label_cooccurrence.png": "Co-occurrence count matrix for all label pairs.",
+    "02b_label_correlation.png": "Pearson correlation (phi coefficient) between binary label vectors.",
     "03_cardinality.png": "Distribution of label-set size per record (0 = hard-negative).",
     "04_length_by_platform.png": "Word and character count distributions per platform (violin).",
     "05_platform_x_type.png": "Stacked bar: record counts across platform × example_type.",

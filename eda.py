@@ -111,6 +111,10 @@ def load_dataset(path: str | Path) -> tuple[pd.DataFrame, np.ndarray, list[str]]
     df["char_count"] = df["text"].apply(lambda t: len(str(t)))
     df["label_count"] = df["labels"].apply(len)
 
+    # Academic-checklist aliases — persona := platform, event_type := example_type
+    df["persona"] = df["platform"]
+    df["event_type"] = df["example_type"]
+
     mlb = MultiLabelBinarizer()
     Y = mlb.fit_transform(df["labels"])
     classes: list[str] = list(mlb.classes_)
@@ -165,6 +169,32 @@ def plot_label_cooccurrence(Y: np.ndarray, classes: list[str]) -> None:
     ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
     fig.tight_layout()
     save_fig(fig, "02_label_cooccurrence.png")
+
+
+def plot_label_correlation(Y: np.ndarray, classes: list[str]) -> None:
+    """Pearson correlation matrix between binary label vectors (phi coefficient for binary data)."""
+    # np.corrcoef treats rows as variables; transpose so each label is a variable
+    corr = np.corrcoef(Y.T)
+    rtl_classes = [rtl(c) for c in classes]
+    corr_df = pd.DataFrame(corr, index=rtl_classes, columns=rtl_classes)
+
+    fig, ax = plt.subplots(figsize=(9, 7))
+    sns.heatmap(
+        corr_df,
+        annot=True,
+        fmt=".2f",
+        cmap="RdBu_r",
+        center=0,
+        vmin=-1,
+        vmax=1,
+        linewidths=0.5,
+        ax=ax,
+        cbar_kws={"label": "Pearson correlation (phi)"},
+    )
+    ax.set_title("Label Pearson Correlation Matrix")
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha="right")
+    fig.tight_layout()
+    save_fig(fig, "02b_label_correlation.png")
 
 
 def plot_label_cardinality(df: pd.DataFrame) -> None:
@@ -363,6 +393,7 @@ def run_eda_pipeline(
     print("\n[eda] Generating charts …")
     plot_label_marginals(Y, classes)
     plot_label_cooccurrence(Y, classes)
+    plot_label_correlation(Y, classes)
     plot_label_cardinality(df)
     plot_length_by_platform(df)
     plot_platform_x_type(df)
