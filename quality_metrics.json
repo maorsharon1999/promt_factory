@@ -1,0 +1,25 @@
+﻿{
+  "total_generated": 100,
+  "total_accepted": 0,
+  "total_rejected": 100,
+  "rejection_rate": 1.0,
+  "per_code_counts": {
+    "UNNATURAL_ROBOTIC": 100
+  },
+  "per_label_rejection_rate": {
+    "anger_irritability": 0.16,
+    "functional_impairment": 0.1,
+    "guilt_shame": 0.12,
+    "hypervigilance": 0.18,
+    "sleep_disturbance": 0.25,
+    "intrusive_memories": 0.12,
+    "emotional_numbing": 0.06,
+    "avoidance": 0.06
+  },
+  "per_platform_rejection_rate": {
+    "diary": 0.31,
+    "tweet": 0.29,
+    "reddit": 0.22,
+    "whatsapp": 0.18
+  }
+}

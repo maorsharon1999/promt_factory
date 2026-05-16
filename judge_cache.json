@@ -1,0 +1,217 @@
+﻿{
+  "a433162e8f04f497f7d71abf4a233ed0c3667a2a": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of frustration, anger, and guilt. The tone and style match the diary platform, and there is no clinical leak or translationese. The text does not exhibit robotic behavior, and the labels are supported by textual evidence. There is also no slang misuse."
+  },
+  "46c6be5f11e2b4198843a86d1a9c47218bfc61e0": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew text appears to be a natural and idiomatic expression of emotions, thoughts, and experiences typical for a diary entry. The tone, length, and style match the platform 'diary'. No clinical leak or translationese issues are detected. The robotic check is not triggered as the opener is not 'מאז ש...', token count is greater than 8, slang_used contains terms, and severity is not 'mild'. Labels for anger_irritability and guilt_shame are supported by textual evidence. Slang usage appears natural and idiomatic. Therefore, the verdict is ACCEPT."
+  },
+  "3c18ce0c8434488f3b14b9d75583aaae11c447dd": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of hypervigilance, with no clinical leaks, translationese, robotic, or slang issues. The tone and style match the tweet platform, and the text contains behavioral/emotional cues supporting the label."
+  },
+  "393547c093a204a38c16cb2cc393de541c7021b7": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of frustration with sleep disturbances, matching the tone and style expected for a tweet. The text does not contain any diagnostic terms or clinical language, nor does it exhibit robotic or unnatural phrasing. The labels are supported by behavioral cues in the text, and there is no slang misuse."
+  },
+  "863e001cf9b5cb5471c7f3521da1889f5e7d5cec": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic diary entry, with a tone and style matching the platform 'diary'. The text does not contain any diagnostic terms or clinical leaks. There is no literal English calque or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used is not empty, and severity is not 'mild', so there is no robotic check failure. The label 'sleep_disturbance' has textual evidence supporting it. Slang 'קו' is used naturally as an Israeli soldier or veteran would use it. Therefore, the verdict is ACCEPT."
+  },
+  "e05b2e1f26a493b521fee3620a8527ccf075345a": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given synthetic Hebrew utterance appears to be a natural and idiomatic expression of a personal experience, with no obvious clinical leaks, translationese, or robotic patterns. The tone and style match the Reddit platform, and the labels 'sleep_disturbance' and 'hypervigilance' are supported by behavioral/emotional cues in the text."
+  },
+  "2c6cbea8fb246a042f737a55840fb9a6310856f9": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and coherent tweet about sleep disturbances and intrusive memories. The tone, length, and style match the platform=tweet label. There is no clinical leak or translationese issues detected. The text does not exhibit robotic behavior. The labels are supported by textual evidence in the utterance. Slang usage is also natural and idiomatic. Therefore, the verdict is ACCEPT."
+  },
+  "714856c25f9419d6f19fb989dccc38137c972215": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and coherent diary entry, with a tone and style matching the platform 'diary'. The text does not contain any diagnostic terms or clinical leaks. There are no literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used contains non-empty values, and severity is not 'mild'. The labels 'sleep_disturbance' and 'hypervigilance' have textual evidence supporting them. Slang tokens are used naturally as an Israeli soldier or veteran would use them."
+  },
+  "7e19403190e9eea14eaa45428d07f1c3af39ebf5": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of a diary entry, with no obvious clinical leaks or translationese issues. The tone and style match the platform 'diary', and there are no robotic or unnatural patterns detected. The label 'sleep_disturbance' is supported by the text's content, and slang usage is not misused."
+  },
+  "64dcc476cae1626fb409edf8210bbbcd5043438b": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural diary entry, with a tone and style matching the platform 'diary'. There are no diagnostic terms or clinical leaks. The text does not contain literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used is empty, and severity is 'medium', so there is no robotic behavior. The label 'hypervigilance' has textual evidence supporting it. There is no slang misuse. Therefore, the verdict is ACCEPT."
+  },
+  "fd9afcca484f489b7f9a971ebe46032efa1f141c": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of frustration and discomfort, with no obvious clinical leaks or robotic patterns. The tone and style match the Reddit platform, and the text contains behavioral/emotional cues supporting the labels 'sleep_disturbance' and 'hypervigilance'."
+  },
+  "334a7ebca78ef5d116cbb50c708160be63670904": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of frustration and anger, matching the tone and style expected for a tweet. The text does not contain any clinical or diagnostic terms, nor does it exhibit robotic or unnatural phrasing. The labels 'anger_irritability' are supported by behavioral/emotional cues in the text. Finally, there is no slang used that would suggest misuse."
+  },
+  "086c2a0b7288306e0d65fa14b9d1ccc934c13d08": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of a person's experience, with no obvious clinical leaks, translationese, robotic or unnatural phrasing. The labels 'sleep_disturbance' and 'hypervigilance' seem supported by the text's behavioral and emotional cues. Slang usage is also natural and context-appropriate."
+  },
+  "69f0a957bb5fbe604bca03a46287aa9d1c432508": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of emotional numbing, with no clinical leaks, translationese, robotic patterns, or slang misuse. The text's tone, length, and style match the Reddit platform."
+  },
+  "ac12d184cee88d1c73e10c81c70025de6f5f69b7": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of emotions and experiences, matching the tone and style expected for a Reddit post. No clinical leaks or translationese issues were detected. The text does not exhibit robotic patterns, and the labels are supported by textual cues. Slang usage is also natural and authentic."
+  },
+  "6141f27f08119537ddd57476cd3c23433c71c7f2": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and coherent diary entry, matching the tone and style expected for a platform=diary. No clinical leak or translationese issues were detected. The text does not exhibit robotic behavior, and the labels ['functional_impairment'] are supported by textual evidence. Finally, no slang misuse was found."
+  },
+  "0358580d8e2a163acdb84332fec75c4ea3c477c5": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of frustration, matching the tone and style expected for a Reddit post. No clinical leak terms are present, nor any literal English calques or unidiomatic phrasing. The text does not exhibit robotic characteristics, and the labels 'anger_irritability' seem supported by the emotional cues in the text. Finally, there is no slang misuse detected."
+  },
+  "4ee5fff721f639c205b75a96c90c4a7dbf783495": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural diary entry, with a tone and style matching the platform 'diary'. The text does not contain any diagnostic terms or clinical leaks. There are no literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used is not empty, and severity is not 'mild', so the robotic check fails. However, the text contains behavioral/emotional cues supporting the label 'sleep_disturbance'. Slang 'קו' is used naturally as an Israeli soldier or veteran would use it. Therefore, no failure codes are added."
+  },
+  "3948c99a3433cfb8b3e3a1d67748d044d14148cf": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of frustration, matching the tone and style expected for a tweet. The text does not contain any clinical or diagnostic terms, nor does it exhibit robotic or unnatural phrasing. The labels 'anger_irritability' are supported by the emotional cues in the text, and the slang term 'קו' is used naturally. Therefore, no failure codes were detected."
+  },
+  "466dd7b9dd5c95067cb714479d31979ac44aa2c8": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of avoidance, with no clinical leaks, translationese, robotic or unnatural phrasing, or slang misuse. The tone and length match the tweet platform, and the labels are supported by behavioral cues in the text."
+  },
+  "07f8522ae9f3feeba029798737a3a25095bed338": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew text appears to be a natural and idiomatic expression of thoughts and feelings, matching the tone and style expected for a tweet. No clinical leak or translationese issues were detected. The text does not exhibit robotic behavior, and the labels are supported by textual cues. Slang usage is also natural and authentic."
+  },
+  "16136d16fc2b7aac4e7ff018808575005a685149": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The provided synthetic Hebrew utterance appears to be a natural and idiomatic expression of thoughts and feelings, matching the tone and style expected for WhatsApp. The text does not contain any diagnostic terms or clinical leaks, nor does it exhibit robotic or unnatural phrasing. The labels 'sleep_disturbance' and 'intrusive_memories' are supported by textual cues in the utterance. Finally, the slang term 'קו' is used naturally and appropriately."
+  },
+  "aea09001ad8b09b59f0bd8385326bfa083b4cfe7": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of a personal experience, with no obvious clinical leaks, translationese, or robotic patterns. The tone and style match the platform 'reddit', and the labels 'sleep_disturbance' and 'intrusive_memories' are supported by behavioral/emotional/cognitive/somatic cues in the text. Slang terms used appear to be natural and authentic."
+  },
+  "38ee2001a84179fae5b1853e2ac3485e853a3551": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given synthetic Hebrew utterance appears to be a natural diary entry, with a tone and style matching the platform 'diary'. There are no diagnostic terms or clinical leaks. The text does not contain literal English calques or unidiomatic phrasing. It also does not exhibit robotic behavior. The labels 'intrusive_memories' seem supported by the text's content. Finally, the slang term 'קו' is used naturally. Therefore, there are no failure codes."
+  },
+  "c33b0bcc71212ae2ab2468589e93fe7f0d488aef": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of frustration, with no obvious clinical leaks, translationese, or robotic patterns. The text's tone, length, and style are consistent with the reddit platform. The labels 'functional_impairment' seem supported by the text's content. Finally, the slang term 'קו' is used naturally."
+  },
+  "3a6d7de372340889b4c8be2577c7fa16a426cf97": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural expression of frustration and annoyance, matching the tone and style expected for WhatsApp. No clinical leak or translationese issues were detected. The text does not exhibit robotic behavior, nor is there any mismatch between labels and textual cues. Slang usage also seems natural. Therefore, the verdict is ACCEPT."
+  },
+  "4272da54f08f8833d76ae1947157a7185832dabf": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural-sounding tweet, with a tone and style matching that of a typical Twitter post. The text does not contain any diagnostic terms or clinical leaks, nor does it exhibit robotic or unnatural phrasing. Additionally, the labels 'avoidance' are supported by behavioral cues in the text, and there is no slang misuse. Therefore, the verdict is ACCEPT."
+  },
+  "346a73c40210f8da9b862c83ac5eeb0a890fa659": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given synthetic Hebrew utterance appears to be a natural diary entry, with a tone and style matching the platform 'diary'. There are no diagnostic terms or clinical leaks. The text does not contain literal English calques or unidiomatic phrasing. It also passes the robotic check as it meets all four conditions. The labels 'intrusive_memories' seem to be supported by the text, which contains behavioral/emotional cues. Finally, there is no slang used in the utterance, so the verdict is ACCEPT."
+  },
+  "09202ac7a16e6f0065c9ea0af52ee2c57c6869b6": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural and idiomatic expression of avoidance, with no clinical leaks, translationese, robotic or slang issues. The tone and style match the WhatsApp platform, and the labels 'avoidance' are supported by behavioral cues in the text."
+  },
+  "054a911bac5e18aa3172a979b36ddb40b638e968": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural diary entry, with a tone and style matching the platform 'diary'. There are no clinical leak terms or translationese issues. The text does not exhibit robotic behavior. The labels for anger and irritability are supported by emotional cues in the text. Finally, there is no slang misuse."
+  },
+  "a4c48ef758e97bd37c0d85239a3f35f43b373ae2": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The provided Hebrew text appears to be a natural and idiomatic expression of emotions and experiences, matching the tone and style expected for WhatsApp. No clinical leak or translationese issues were detected. The text does not exhibit robotic patterns, and the labels 'functional_impairment' and 'emotional_numbing' are supported by behavioral/emotional/cognitive/somatic cues in the text. Slang usage is also natural and idiomatic. Therefore, the verdict is ACCEPT."
+  },
+  "9af3396c8f59086d036b3e0b3e790005661ebb3f": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural tweet, with a tone and style matching the platform. It does not contain any diagnostic terms or clinical leaks. The translationese check also passes, as the text does not exhibit literal English calques or unidiomatic phrasing. The robotic check fails due to the presence of an opener ('כל פעם שאני') and a token count greater than 7. However, this is not flagged as unnatural robotic since the severity is 'medium', which does not match the fourth condition. Finally, the label check passes, as the text contains behavioral/emotional cues supporting the sleep disturbance label."
+  },
+  "e1d8ab0a566ea4aca4d61e2ebd4fd50d231f04de": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of emotions, with a tone that matches the diary platform. The text does not contain any clinical leak terms or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used is not empty, and severity is not 'mild'. The labels are supported by textual evidence, and the slang tokens appear to be used naturally."
+  },
+  "ac48d9d0b15f9d117f87892596cc5c7a6ad8798f": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given synthetic Hebrew utterance appears to be a natural and idiomatic expression of hypervigilance, with no clinical leaks, translationese, robotic or unnatural phrasing, nor slang misuse. The text's tone, length, and style are consistent with the WhatsApp platform."
+  },
+  "07118eba01084c43c59e7e364e423f9e98eba568": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of emotions, with a tone and style consistent with WhatsApp platform. No clinical leak or translationese issues were detected. The text does not exhibit robotic behavior, and the labels 'anger_irritability' and 'guilt_shame' are supported by textual cues. Slang usage is also natural and appropriate for an Israeli speaker."
+  },
+  "1f92540a4a649a20cb4ababd6cd20fffccc8d22e": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of hypervigilance, with no clinical leaks, translationese, robotic, or slang misuse issues. The text's tone, length, and style match the Reddit platform."
+  },
+  "271eeba138123578c2f0e5609978e832fc5b44fc": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and coherent diary entry, with a tone and style matching the platform 'diary'. The text does not contain any diagnostic terms or clinical leaks. There is no literal English calque or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used is not empty, and severity is not 'mild', so the robotic check fails. However, the text contains behavioral/emotional/cognitive/somatic cues supporting the labels 'sleep_disturbance' and 'hypervigilance'. The slang used appears to be natural and idiomatic. Therefore, no failure codes are added."
+  },
+  "74958509cf774bd371259e49e89580ffff3b161b": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of guilt and shame, matching the tone and style expected for a Reddit post. The text does not contain any clinical or diagnostic terms, nor does it exhibit robotic or unnatural language patterns. The labels 'guilt_shame' are supported by textual cues in the utterance, and there is no slang misuse."
+  },
+  "371aab8367975a000b8e2186d8ab829b6bf958b8": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given Hebrew utterance appears to be a natural expression of frustration and anger, matching the tone and style expected for WhatsApp. No clinical leak or translationese issues were detected. The text does not exhibit robotic behavior, and the labels 'anger_irritability' are supported by emotional cues in the text. Slang usage is also natural and idiomatic. Therefore, the verdict is ACCEPT."
+  },
+  "980db0f4405944dc78822bc335fc709cc10404c9": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of emotional numbing, with no clinical leaks, translationese, robotic patterns, or slang misuse. The text's tone, length, and style match the diary platform, and it contains behavioral/emotional cues supporting the 'emotional_numbing' label."
+  },
+  "5ae3ecea585f325269b94d085a89c090a4c43506": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of frustration and delay, consistent with the tweet platform. No clinical leak or translationese issues are detected. The text does not exhibit robotic behavior, and the labels for functional impairment seem supported by the content. Slang usage is also natural and authentic. Therefore, the verdict is ACCEPT."
+  },
+  "a78c8aa26f595484ae8b0e84680b76dfd0c2cda9": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of a personal experience, matching the tone and style expected for a tweet. The text does not contain any clinical or diagnostic terms, nor does it exhibit translationese or robotic phrasing. The labels are supported by textual cues, and the slang term is used naturally. Therefore, no failure codes were detected."
+  },
+  "4f27577e4c2db9ed931d65e75d89fc16104b075e": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The given synthetic Hebrew utterance appears to be a natural and coherent tweet about intrusive memories. The tone, length, and style match the platform 'tweet'. There are no diagnostic terms or clinical leaks detected. The text does not contain literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...' and token count is greater than 8. Slang_used contains a single term 'סבב' which is used naturally as an Israeli soldier or veteran would use it. Finally, the labels ['intrusive_memories'] are supported by textual evidence in the utterance."
+  }
+}

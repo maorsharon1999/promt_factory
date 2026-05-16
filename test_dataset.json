@@ -1,0 +1,345 @@
+﻿[
+  {
+    "id": "syn_0000",
+    "text": "מאז שהיינו שם בפנים אני מתעצבן מכל שטות. בנוסף, הזנחתי את כל התחביבים שלי. מה חדש.",
+    "labels": [
+      "anger_irritability",
+      "functional_impairment",
+      "guilt_shame"
+    ],
+    "example_type": "positive_clear",
+    "platform": "diary",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0004",
+    "text": "מאז שחזרנו מהקו אני ישן ממש מעט שעות בלילה. תשוש מהכל.",
+    "labels": [
+      "sleep_disturbance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "diary",
+    "explicitness": "explicit",
+    "severity": "medium",
+    "slang_used": [
+      "קו"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0005",
+    "text": "מאז שהיינו שם בפנים אני לא מצליח לעצום עיניים. בנוסף, דרוך כאילו אני עדיין בעמדה. אותו סיפור.",
+    "labels": [
+      "sleep_disturbance",
+      "hypervigilance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "reddit",
+    "explicitness": "explicit",
+    "severity": "strong",
+    "slang_used": [
+      "עמדה"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0006",
+    "text": "מאז שחזרתי למשפחה אני מתעורר מכל רעש קטן. בנוסף, פתאום אני מוצא את עצמי שוב בתוך האירוע. איזה יופי.",
+    "labels": [
+      "sleep_disturbance",
+      "intrusive_memories"
+    ],
+    "example_type": "positive_clear",
+    "platform": "tweet",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0007",
+    "text": "מאז שחזרתי לישון במיטה שלי אני נרדם בקושי ומתעורר אחרי שעה. בנוסף, יושב תמיד עם הגב לקיר. אי אפשר ככה. (פלוגה ונגמ\"ש — בלי קשר.)",
+    "labels": [
+      "sleep_disturbance",
+      "hypervigilance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "diary",
+    "explicitness": "behavioral",
+    "severity": "medium",
+    "slang_used": [
+      "קו",
+      "פלוגה",
+      "נגמ\"ש",
+      "קשר"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0011",
+    "text": "מאז שחזרתי לשגרה אני מתעצבן על דברים שפעם לא הפריעו לי. זה פשוט לא הגיוני.",
+    "labels": [
+      "anger_irritability"
+    ],
+    "example_type": "positive_clear",
+    "platform": "tweet",
+    "explicitness": "explicit",
+    "severity": "strong",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0012",
+    "text": "מאז שחזרתי מהסבב האחרון אני לא מצליח לעצום עיניים. בנוסף, מרגיש שהגוף שלי במתח מתמיד. זה חלאס.",
+    "labels": [
+      "sleep_disturbance",
+      "hypervigilance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "reddit",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [
+      "סבב"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0013",
+    "text": "כל פעם שאני יוצא מהבית אני מרגיש ריחוק מהמשפחה והחברים. ממש חגיגה.",
+    "labels": [
+      "emotional_numbing"
+    ],
+    "example_type": "positive_clear",
+    "platform": "reddit",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0018",
+    "text": "בתקופה האחרונה אני מתעצבן כששואלים אותי מה נשמע. זה בשקט.",
+    "labels": [
+      "anger_irritability"
+    ],
+    "example_type": "positive_clear",
+    "platform": "tweet",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [
+      "קו"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0022",
+    "text": "מאז שנגמר הסבב אני מפחד ללכת לישון לפעמים. בנוסף, פלאשבקים של דברים שקרו שם. בקטע מוזר. (צו 8 — בלי קשר.)",
+    "labels": [
+      "sleep_disturbance",
+      "intrusive_memories"
+    ],
+    "example_type": "positive_clear",
+    "platform": "reddit",
+    "explicitness": "explicit",
+    "severity": "medium",
+    "slang_used": [
+      "צו 8",
+      "קשר",
+      "סבב"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0023",
+    "text": "בתקופה האחרונה אני רואה את הפנים שלהם מול העיניים שלי. תשוש מהכל.",
+    "labels": [
+      "intrusive_memories"
+    ],
+    "example_type": "positive_clear",
+    "platform": "diary",
+    "explicitness": "explicit",
+    "severity": "strong",
+    "slang_used": [
+      "קו"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0024",
+    "text": "בתקופה האחרונה אני בוהה במסך שעות בלי לעשות כלום. פשוט ככה.",
+    "labels": [
+      "functional_impairment"
+    ],
+    "example_type": "positive_clear",
+    "platform": "reddit",
+    "explicitness": "behavioral",
+    "severity": "medium",
+    "slang_used": [
+      "קו"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0026",
+    "text": "מאז שהיינו שם בפנים אני נמנע מלנסוע לשם. משהו כזה.",
+    "labels": [
+      "avoidance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "tweet",
+    "explicitness": "explicit",
+    "severity": "medium",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0032",
+    "text": "מאז שנגמר הסבב אני מרגיש שהדם שלי רותח בקלות. בנוסף, מרגיש רע שאני פה והם עדיין שם. לא יודע. (חוליה — בלי קשר.)",
+    "labels": [
+      "anger_irritability",
+      "guilt_shame"
+    ],
+    "example_type": "positive_clear",
+    "platform": "diary",
+    "explicitness": "explicit",
+    "severity": "strong",
+    "slang_used": [
+      "קשר",
+      "סבב",
+      "חוליה"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0033",
+    "text": "מאז שכל זה נגמר אני בודק את הדלת עשר פעמים לפני שאני נכנס. בלי להגזים.",
+    "labels": [
+      "hypervigilance"
+    ],
+    "example_type": "positive_clear",
+    "platform": "whatsapp",
+    "explicitness": "behavioral",
+    "severity": "strong",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0037",
+    "text": "בכלל לא חשבתי ש מאז כל הסיפור האשמה פשוט לא מרפה ממני. כבר התרגלתי לזה לצערם של כולם.",
+    "labels": [
+      "guilt_shame"
+    ],
+    "example_type": "implicit",
+    "platform": "reddit",
+    "explicitness": "implicit",
+    "severity": "mild",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0046",
+    "text": "תכלס מאז כל הסיפור אני מרגיש כמו רובוט שפשוט פועל. ככה זה נראה כרגע.",
+    "labels": [
+      "emotional_numbing"
+    ],
+    "example_type": "implicit",
+    "platform": "tweet",
+    "explicitness": "implicit",
+    "severity": "medium",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0061",
+    "text": "נמאס לי לישון בשקי שינה. אני גמור.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "whatsapp",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0063",
+    "text": "הפסדתי המון חומר בלימודים בגלל הצו. נמאס לי מהפקקים בדרך לבסיס. ממש חגיגה.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "whatsapp",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [
+      "בסיס"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0066",
+    "text": "הפסדתי מלא כסף מהעסק בגלל הסבב הזה. נמאס לי לישון בשקי שינה. השירותים בבסיס זה הדבר הכי מגעיל שיש. אין לי כוח לזה.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "diary",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [
+      "בסיס",
+      "סבב"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0067",
+    "text": "התבאסתי רצח שלא הייתי ביומולדת של הבת שלי. התגעגעתי בטירוף לאוכל של הבית. איזה יופי.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "diary",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0070",
+    "text": "נשרף לי כל הקיץ על המילואים האלה. הקצינה שוב שכחה לחתום לי על הטפסים. כבר נמאס לי.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "reddit",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [
+      "מילואים"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0072",
+    "text": "כל היום רק חיכינו וחיכינו לשוברים. נשרף לי כל הקיץ על המילואים האלה. הפסדתי המון חומר בלימודים בגלל הצו. זה פשוט לא הגיוני.",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "reddit",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [
+      "מילואים"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "syn_0073",
+    "text": "נשרף לי כל הקיץ על המילואים האלה. זה מעצבן ברמות. (פלוגה — זה החיים.)",
+    "labels": [],
+    "example_type": "hard_negative",
+    "platform": "whatsapp",
+    "explicitness": "explicit",
+    "severity": "mild",
+    "slang_used": [
+      "פלוגה",
+      "מילואים"
+    ],
+    "synthetic": true
+  }
+]
