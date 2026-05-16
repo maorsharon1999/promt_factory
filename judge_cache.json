@@ -213,5 +213,10 @@
     "verdict": "ACCEPT",
     "failure_codes": [],
     "reasoning": "The given synthetic Hebrew utterance appears to be a natural and coherent tweet about intrusive memories. The tone, length, and style match the platform 'tweet'. There are no diagnostic terms or clinical leaks detected. The text does not contain literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...' and token count is greater than 8. Slang_used contains a single term 'סבב' which is used naturally as an Israeli soldier or veteran would use it. Finally, the labels ['intrusive_memories'] are supported by textual evidence in the utterance."
+  },
+  "fd665bd4ea26e35a4b1a74802b9f0ff3813bcce0": {
+    "verdict": "ACCEPT",
+    "failure_codes": [],
+    "reasoning": "The synthetic Hebrew utterance appears to be a natural and idiomatic expression of a tweet, with a tone and style consistent with the platform. The text does not contain any diagnostic terms or clinical leaks. There are no literal English calques or unidiomatic phrasing. The opener is not 'מאז ש...', token count is greater than 8, slang_used contains non-empty values, and severity is not 'mild'. The labels have textual evidence supporting them. Slang usage appears natural. Therefore, the verdict is ACCEPT."
   }
 }
