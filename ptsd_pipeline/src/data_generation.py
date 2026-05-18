@@ -1,19 +1,33 @@
+"""
+data_generation.py
+==================
+Ported from src/prompt_factory.py.
+Generates synthetic Hebrew PTSD-indicator dataset via an LLM pipeline.
+
+Public symbols re-exported for downstream consumers (quality_judge, run_pipeline):
+    LLMProvider, LLMConfig, LLMClient, OllamaClient, OpenRouterClient,
+    OpenAIClient, MockLLMClient, ResilienceLLMClient, create_llm_client,
+    PromptFactory, Scenario, DatasetScenario, DatasetExample,
+    DatasetPromptBuilder, DatasetGenerator, generate_dataset
+
+All new comments are in English. Original variable names and docstrings preserved verbatim.
+"""
+
 from __future__ import annotations
 
 import abc
 import enum
 import json
+import logging
 import os
 import random
 import sys
 import urllib.request
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Literal
 
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
-if hasattr(sys.stderr, "reconfigure"):
-    sys.stderr.reconfigure(encoding="utf-8")
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -1105,7 +1119,8 @@ class DatasetPromptBuilder:
             ]
         random.shuffle(pool)
         return pool[:3]
-    def build(self, scenario: DatasetScenario) -> str:
+    def build_sectioned(self, scenario: DatasetScenario) -> str:
+        # Section-based builder kept for reference; few-shot `build` is the active path.
         parts: list[str] = []
         parts.append(self._role())
         parts.append(self._platform(scenario.platform))
@@ -1216,6 +1231,53 @@ def _pick_slang_injection() -> str | None:
     return f"{random.choice(pool)} ו{random.choice(pool)}"
 
 
+_SLANG_PERIOD_TERMS: set[str] = {"מילואים", "סדיר", "סבב", "קו", "אימון", "המבצע", "התקופה"}
+
+_SUBJECT_NOUNS: set[str] = {
+    "השינה", "הלילות", "החלומות", "הזיכרונות", "המחשבות", "הקולות",
+    "האשמה", "הגוף", "התחושות", "התגובות", "הרגשות", "הזיכרונות",
+}
+
+_INTERROGATIVES: set[str] = {"למה", "איך", "מה", "איפה", "מתי"}
+
+
+def _behavior_shape(phrase: str) -> str:
+    # Return "clause" if phrase has its own subject or is a question; else "verb".
+    s = phrase.strip()
+    first = s.split()[0] if s else ""
+    if first in _SUBJECT_NOUNS:
+        return "clause"
+    # Definite-noun subjects: starts with ה + ends with common plural/fem suffix
+    if (first.startswith("ה") and len(first) > 3
+            and any(first.endswith(suf) for suf in ("ים", "ות", "ה", "ן"))):
+        return "clause"
+    if first in _INTERROGATIVES:
+        return "clause"
+    return "verb"
+
+
+def _compose_positive_clause(context: str, behavior: str) -> str:
+    # Choose the right glue between context opener and behavior phrase.
+    if _behavior_shape(behavior) == "clause":
+        return f"{context} {behavior}."
+    return f"{context} אני {behavior}."
+
+
+def _apply_slang_to_sentences(sentences: list[str], slang: str, context: str) -> None:
+    # Avoid "מאז {slang} — מאז …" collision; avoid non-period slang in temporal prefix.
+    if context.startswith("מאז") or slang not in _SLANG_PERIOD_TERMS:
+        sentences.append(f"({slang} — בלי קשר.)")
+    else:
+        sentences.insert(0, f"מאז {slang} —")
+
+
+def _safe_tone_tail(tone_word: str) -> str:
+    # Short tone words need a framing wrapper to stand alone as a sentence.
+    if len(tone_word) < 6:
+        return f"זה {tone_word}."
+    return f"{tone_word}."
+
+
 def _assemble_positive(labels: list[str], explicitness: str) -> str:
     context = random.choice(CONTEXT_BANK)
     sentences: list[str] = []
@@ -1232,19 +1294,24 @@ def _assemble_positive(labels: list[str], explicitness: str) -> str:
     if explicitness == "implicit":
         starter = random.choice(SENTENCE_STARTERS)
         ending = random.choice(SENTENCE_ENDINGS)
-        sentences.append(f"{starter} {context} אני {behaviors[0]}.")
+        first_clause = _compose_positive_clause(context, behaviors[0])
+        sentences.append(f"{starter} {first_clause}")
         if len(behaviors) > 1:
             sentences.append(f"{behaviors[1]}. {ending}.")
         else:
             sentences.append(f"{ending}.")
     else:
-        sentences.append(f"{context} אני {behaviors[0]}.")
+        sentences.append(_compose_positive_clause(context, behaviors[0]))
         if len(behaviors) > 1:
-            sentences.append(f"בנוסף, {behaviors[1]}.")
-        sentences.append(f"{tone_word}.")
+            b1 = behaviors[1]
+            if _behavior_shape(b1) == "clause":
+                sentences.append(f"{b1}.")
+            else:
+                sentences.append(f"בנוסף, {b1}.")
+        sentences.append(_safe_tone_tail(tone_word))
     slang = _pick_slang_injection()
     if slang:
-        sentences.insert(0, f"מאז {slang} —")
+        _apply_slang_to_sentences(sentences, slang, context)
     return " ".join(sentences)
 
 
@@ -1253,7 +1320,7 @@ def _assemble_hard_negative() -> str:
     tone_key = random.choice(["tired", "cynical", "frustrated"])
     tone_word = random.choice(TONE_BANK[tone_key])
     sentences = [f"{b}." for b in behaviors]
-    sentences.append(tone_word + ".")
+    sentences.append(_safe_tone_tail(tone_word))
     slang = _pick_slang_injection()
     if slang:
         sentences.append(f"({slang} — זה החיים.)")
@@ -1270,7 +1337,7 @@ def _assemble_ambiguous(labels: list[str]) -> str:
         if bank:
             subtle = random.choice(bank)
             sentences.append(f"אולי זה בגלל ש{subtle}, לא בטוח.")
-    sentences.append(f"{tone_word}.")
+    sentences.append(_safe_tone_tail(tone_word))
     return " ".join(sentences)
 
 
@@ -1284,6 +1351,22 @@ _NIQQUD_RANGE = (0x05B0, 0x05C7)  # Hebrew vowel points
 
 def _has_niqqud(text: str) -> bool:
     return any(_NIQQUD_RANGE[0] <= ord(c) <= _NIQQUD_RANGE[1] for c in text)
+
+
+import re as _re
+
+# Structural defects the LLM should fix; reject polished output if still present.
+_BROKEN_SYNTAX_PATTERNS: list[_re.Pattern[str]] = [
+    _re.compile("אני ה[א-ת]{2,}"),            # "אני" + definite-noun subject
+    _re.compile("אני (למה|איך|מה|איפה|מתי)"),  # "אני" + interrogative
+    _re.compile("מאז.{0,40}—\\s*מאז"),         # duplicate "מאז" within ~40 chars
+    _re.compile("(בערך|וואלה|כרגיל)[.\\s]*$"), # dangling short-tone tail
+]
+
+
+def _has_broken_syntax(text: str) -> bool:
+    # Return True if any known structural defect is present in text.
+    return any(p.search(text) is not None for p in _BROKEN_SYNTAX_PATTERNS)
 
 
 def _polish_quality_ok(raw: str, polished: str) -> bool:
@@ -1302,10 +1385,10 @@ def _polish_quality_ok(raw: str, polished: str) -> bool:
     for pat in _POLISH_REJECT_PATTERNS:
         if pat.lower() in lower:
             return False
-    # Reject if polished lost too much content (< 40% of raw word count)
+    # Reject if polished lost too much content (< 30% of raw word count, loosened to allow restructuring)
     raw_words = len(raw.split())
     pol_words = len(polished.split())
-    if raw_words > 3 and pol_words < raw_words * 0.4:
+    if raw_words > 3 and pol_words < raw_words * 0.3:
         return False
     # Reject if it got dramatically longer (LLM added content)
     if pol_words > raw_words * 2.5:
@@ -1314,7 +1397,41 @@ def _polish_quality_ok(raw: str, polished: str) -> bool:
     archaic = ["אינני", "אינו", "הנני", "הנה כי כן", "אמנם כי"]
     if any(a in polished for a in archaic):
         return False
+    # Reject if structural defects survived the polish pass
+    if _has_broken_syntax(polished):
+        return False
     return True
+
+
+def _polish_with_few_shot(
+    llm: LLMClient,
+    raw_text: str,
+    scenario: "DatasetScenario",
+    builder: "DatasetPromptBuilder",
+) -> str:
+    # Build a rich few-shot prompt so the LLM rewrites raw_text in authentic Hebrew style.
+    base_prompt = builder.build(scenario)
+    prompt = (
+        base_prompt
+        + "\n\n---\nNOW: Rewrite the DRAFT below as ONE coherent Israeli Hebrew message in the style shown above.\n"
+        "- Keep the overall meaning and emotional content.\n"
+        "- You ARE allowed to restructure sentences to fix broken grammar.\n"
+        "- Fix these specific defects if present: 'אני ה...' before a noun, 'אני למה/איך/מה', duplicate 'מאז … — מאז', "
+        "or a two-word standalone tail like 'בערך.' or 'וואלה.'.\n"
+        "- Output ONLY the rewritten Hebrew text — no explanations, no English, no quotes.\n\n"
+        f"DRAFT:\n{raw_text}"
+    )
+    try:
+        result = llm.generate(prompt).strip()
+        if len(result) >= 2 and result[0] in ('"', "'", "“") and result[-1] in ('"', "'", "”"):
+            result = result[1:-1].strip()
+        lines = [ln for ln in result.splitlines() if not ln.strip().startswith("(")]
+        result = " ".join(" ".join(ln.split()) for ln in lines if ln.strip()).strip()
+        if _polish_quality_ok(raw_text, result):
+            return result
+    except Exception:
+        pass
+    return raw_text
 
 
 def _polish_with_llm(llm: LLMClient, raw_text: str) -> str:
@@ -1352,6 +1469,8 @@ def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[
         return list(random.choices(_POSITIVE_COMBOS, weights=_POSITIVE_WEIGHTS, k=1)[0])
 
     platforms = ["whatsapp", "reddit", "tweet", "diary"]
+    # Builder provides few-shot exemplar anchoring for the polish step.
+    _builder = DatasetPromptBuilder()
     examples: list[DatasetExample] = []
     seen: set[str] = set()
     context_prefix_count: dict[str, int] = {}
@@ -1383,6 +1502,9 @@ def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[
         dangling = ["בתוך", "מתוך", "בתוך-", "לתוך"]
         if any(stripped.endswith(d) for d in dangling):
             return False
+        # Reject structural grammar defects
+        if _has_broken_syntax(text):
+            return False
         norm = " ".join(text.split()).lower()
         if norm in seen:
             return False
@@ -1397,30 +1519,52 @@ def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[
             explicitness = "explicit"
             severity = "medium"
 
+            slang_level = "medium"
+            include_military_context = random.random() > 0.3
+
             if example_type == "positive_clear":
                 labels = pick_combo()
                 explicitness = random.choice(["explicit", "behavioral"])
                 severity = random.choice(["medium", "strong"])
+                slang_level = random.choice(["low", "medium", "high"])
                 raw = _assemble_positive(labels, explicitness)
             elif example_type == "implicit":
                 labels = pick_combo()
                 explicitness = "implicit"
                 severity = random.choice(["mild", "medium"])
+                slang_level = random.choice(["medium", "high"])
                 raw = _assemble_positive(labels, explicitness)
             elif example_type == "hard_negative":
                 labels = []
                 explicitness = "explicit"
                 severity = "mild"
+                slang_level = random.choice(["low", "medium"])
+                include_military_context = True
                 raw = _assemble_hard_negative()
             else:
                 labels = pick_combo() if random.random() > 0.4 else []
                 explicitness = "implicit"
                 severity = "mild"
+                slang_level = random.choice(["medium", "high"])
                 raw = _assemble_ambiguous(labels)
 
-            text = _polish_with_llm(llm, raw)
-            if not accept(text):
-                text = raw
+            # Build a scenario so the polish step can inject few-shot exemplars.
+            _scenario = DatasetScenario(
+                labels=labels,
+                example_type=example_type,
+                platform=random.choice(platforms),
+                explicitness=explicitness,
+                severity=severity,
+                slang_level=slang_level,
+                include_military_context=include_military_context,
+            )
+            # Give the LLM up to 3 passes to produce an acceptable rewrite.
+            text = raw
+            for _ in range(3):
+                candidate = _polish_with_few_shot(llm, raw, _scenario, _builder)
+                if accept(candidate):
+                    text = candidate
+                    break
             if not accept(text):
                 continue
 
@@ -1445,9 +1589,9 @@ def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[
                 synthetic=True,
             ))
             generated += 1
-            print(
-                f"[{len(examples):3d}/{TARGET}] "
-                f"{example_type:14s} | labels={labels}"
+            logger.info(
+                "[%3d/%d] %-14s | labels=%s",
+                len(examples), TARGET, example_type, labels,
             )
 
     records = [
@@ -1461,13 +1605,15 @@ def generate_dataset(llm: LLMClient, output_path: str = "dataset.json") -> list[
     ]
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(records, f, ensure_ascii=False, indent=2)
-    print(f"[INFO] Saved {len(records)} examples → {output_path}")
+    logger.info("Saved %d examples → %s", len(records), output_path)
     return examples
 
 
 class DatasetGenerator:
     MIN_CHARS: int = 30
     QUALITY_THRESHOLD: float = 0.5
+    TARGET: int = 1000
+    MAX_RETRIES: int = 3
 
     def __init__(self, llm: LLMClient) -> None:
         self._llm = llm
@@ -1486,10 +1632,10 @@ class DatasetGenerator:
             example = self._attempt(scenario)
             if example:
                 self._examples.append(example)
-                print(
-                    f"[{len(self._examples):3d}/{self.TARGET}] "
-                    f"{scenario.example_type:14s} | {scenario.platform:8s} | "
-                    f"labels={scenario.labels}"
+                logger.info(
+                    "[%3d/%d] %-14s | %-8s | labels=%s",
+                    len(self._examples), self.TARGET,
+                    scenario.example_type, scenario.platform, scenario.labels,
                 )
         return self._examples
 
@@ -1521,7 +1667,7 @@ class DatasetGenerator:
                     synthetic=True,
                 )
             except Exception as exc:
-                print(f"[WARN] Generation failed: {exc}")
+                logger.warning("Generation failed: %s", exc)
         return None
 
     def _is_valid(self, text: str) -> bool:
@@ -1603,31 +1749,40 @@ class DatasetGenerator:
         ]
         with open(path, "w", encoding="utf-8") as f:
             json.dump(records, f, ensure_ascii=False, indent=2)
-        print(f"[INFO] Saved {len(records)} examples → {path}")
+        logger.info("Saved %d examples → %s", len(records), path)
 
 
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
+# Import canonical path from config so run_pipeline.py and standalone use agree
+from src.config import DATASET_OUTPUT_PATH  # noqa: E402
+
+
+def main() -> None:
     ollama_client = OllamaClient(LLMConfig(model_name="llama3"))
     if ollama_client.health_check():
-        print("[INFO] Ollama is running — using local model (llama3).")
+        logger.info("Ollama is running — using local model (llama3).")
         llm = create_llm_client(model_name="llama3")
     elif os.environ.get("OPENROUTER_API_KEY"):
-        print("[INFO] Ollama not available — falling back to OpenRouter (free tier).")
+        logger.info("Ollama not available — falling back to OpenRouter (free tier).")
         llm = create_llm_client(
             provider=LLMProvider.OPENROUTER,
             model_name="mistralai/mistral-7b-instruct:free",
         )
     else:
-        print(
-            "[WARNING] No LLM provider available (Ollama offline, no OPENROUTER_API_KEY).\n"
-            "          Falling back to MockLLMClient — outputs are deterministic fake Hebrew.\n"
-            "          Start Ollama or set OPENROUTER_API_KEY to generate real synthetic data."
+        logger.warning(
+            "No LLM provider available (Ollama offline, no OPENROUTER_API_KEY). "
+            "Falling back to MockLLMClient — outputs are deterministic fake Hebrew. "
+            "Start Ollama or set OPENROUTER_API_KEY to generate real synthetic data."
         )
         llm = MockLLMClient()
 
-    examples = generate_dataset(llm, output_path="dataset1240.json")
-    print(f"\n[DONE] Generated {len(examples)} synthetic examples.")
+    DATASET_OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    examples = generate_dataset(llm, output_path=str(DATASET_OUTPUT_PATH))
+    logger.info("Generated %d synthetic examples.", len(examples))
+
+
+if __name__ == "__main__":
+    main()

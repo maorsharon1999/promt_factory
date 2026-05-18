@@ -1,6 +1,7 @@
 """
 eda.py — Statistical multi-label EDA & visualization for PTSD Hebrew slang dataset.
 
+Ported from parent eda.py.
 Produces 8 PNGs under visuals/ and eda_tables.json.
 All comments and docstrings are in English.
 File I/O uses utf-8-sig encoding.
@@ -9,6 +10,7 @@ File I/O uses utf-8-sig encoding.
 from __future__ import annotations
 
 import json
+import logging
 import warnings
 from collections import Counter
 from pathlib import Path
@@ -16,6 +18,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MultiLabelBinarizer
+
+logger = logging.getLogger(__name__)
 
 # RTL Hebrew rendering helpers — applied to tick/legend labels only
 try:
@@ -63,11 +67,12 @@ plt.rcParams.update(
 SEED = 1240
 
 # ---------------------------------------------------------------------------
-# Paths & constants
+# Paths & constants — sourced from config for pipeline consistency
 # ---------------------------------------------------------------------------
 
-BASE_DIR = Path(__file__).parent
-VISUALS_DIR = BASE_DIR / "visuals"
+from src.config import PROJECT_ROOT, VISUALS_DIR, CLEAN_DATASET_PATH, EDA_TABLES_PATH  # noqa: E402
+
+BASE_DIR = PROJECT_ROOT  # preserve original name used throughout this module
 
 # Sanity thresholds for text length (plan §2.5)
 _MIN_MEDIAN_WORDS = 8
@@ -85,7 +90,7 @@ def save_fig(fig: plt.Figure, name: str) -> Path:
     out = VISUALS_DIR / name
     fig.savefig(out, dpi=300, bbox_inches="tight")
     plt.close(fig)
-    print(f"  Saved -> {out}")
+    logger.info("Saved -> %s", out)
     return out
 
 
@@ -146,7 +151,7 @@ def plot_label_marginals(Y: np.ndarray, classes: list[str]) -> None:
     # Sanity check: warn about sparse labels
     for i, c in enumerate(sorted_counts):
         if c <= 6:
-            print(f"  [WARN] Sparse label '{classes[order[i]]}' — only {c} examples.")
+            logger.warning("Sparse label '%s' — only %d examples.", classes[order[i]], c)
 
 
 def plot_label_cooccurrence(Y: np.ndarray, classes: list[str]) -> None:
@@ -243,17 +248,20 @@ def plot_length_by_platform(df: pd.DataFrame) -> None:
     save_fig(fig, "04_length_by_platform.png")
 
     # Sanity gate: flag uniform-5-word collapse
-    print("\n  [TEXT LENGTH SANITY]")
+    logger.info("[TEXT LENGTH SANITY]")
     for platform in platforms:
         sub = df[df["platform"] == platform]["word_count"]
         median_w = sub.median()
         std_w = sub.std()
         flag = ""
         if median_w < _MIN_MEDIAN_WORDS:
-            flag += f" [WARN] LOW MEDIAN ({median_w:.1f} < {_MIN_MEDIAN_WORDS})"
+            flag += f" LOW MEDIAN ({median_w:.1f} < {_MIN_MEDIAN_WORDS})"
         if std_w < _MIN_STD_WORDS:
-            flag += f" [WARN] LOW STD ({std_w:.1f} < {_MIN_STD_WORDS})"
-        print(f"    {platform}: median={median_w:.1f} words  std={std_w:.1f}{flag}")
+            flag += f" LOW STD ({std_w:.1f} < {_MIN_STD_WORDS})"
+        if flag:
+            logger.warning("%s: median=%.1f words  std=%.1f%s", platform, median_w, std_w, flag)
+        else:
+            logger.info("%s: median=%.1f words  std=%.1f", platform, median_w, std_w)
 
 
 def plot_platform_x_type(df: pd.DataFrame) -> None:
@@ -308,10 +316,10 @@ def plot_slang_top20(df: pd.DataFrame) -> None:
     """Top-20 slang token frequency bar chart (plan §2.7)."""
     all_slang: list[str] = [s for row in df["slang_used"] for s in row]
     coverage = df["slang_used"].apply(lambda x: len(x) > 0).mean()
-    print(f"\n  Slang coverage: {coverage:.1%} of records have non-empty slang_used.")
+    logger.info("Slang coverage: %.1f%% of records have non-empty slang_used.", coverage * 100)
 
     if not all_slang:
-        print("  [WARN] No slang tokens found — skipping chart 08.")
+        logger.warning("No slang tokens found — skipping chart 08.")
         return
 
     top = Counter(all_slang).most_common(20)
@@ -372,8 +380,8 @@ def build_eda_tables(df: pd.DataFrame, Y: np.ndarray, classes: list[str]) -> dic
 
 
 def run_eda_pipeline(
-    input_path: str | Path = BASE_DIR / "dataset1240.clean.json",
-    tables_path: str | Path = BASE_DIR / "eda_tables.json",
+    input_path: str | Path = CLEAN_DATASET_PATH,
+    tables_path: str | Path = EDA_TABLES_PATH,
 ) -> dict:
     """
     Full EDA pass: load data, produce all charts, persist numeric tables.
@@ -382,15 +390,15 @@ def run_eda_pipeline(
     """
     input_path = Path(input_path)
     if not input_path.exists():
-        fallback = BASE_DIR / "dataset1240.json"
-        print(f"  [WARN] {input_path.name} not found, falling back to {fallback.name}")
+        fallback = BASE_DIR / "data" / "dataset.json"
+        logger.warning("%s not found, falling back to %s", input_path.name, fallback.name)
         input_path = fallback
 
-    print(f"\n[eda] Loading {input_path.name} …")
+    logger.info("Loading %s …", input_path.name)
     df, Y, classes = load_dataset(input_path)
-    print(f"  Records: {len(df)} | Labels: {len(classes)} | Columns: {list(df.columns)}")
+    logger.info("Records: %d | Labels: %d | Columns: %s", len(df), len(classes), list(df.columns))
 
-    print("\n[eda] Generating charts …")
+    logger.info("Generating charts …")
     plot_label_marginals(Y, classes)
     plot_label_cooccurrence(Y, classes)
     plot_label_correlation(Y, classes)
@@ -405,8 +413,8 @@ def run_eda_pipeline(
     tables_path = Path(tables_path)
     with open(tables_path, "w", encoding="utf-8-sig") as f:
         json.dump(tables, f, ensure_ascii=False, indent=2)
-    print(f"\n[eda] Tables -> {tables_path}")
-    print(f"[eda] All charts saved to {VISUALS_DIR}/")
+    logger.info("Tables -> %s", tables_path)
+    logger.info("All charts saved to %s/", VISUALS_DIR)
 
     return tables
 

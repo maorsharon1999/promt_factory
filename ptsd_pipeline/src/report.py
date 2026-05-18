@@ -1,6 +1,7 @@
 """
 report.py — Week 9 interim report visuals and Slide 3 summary generator.
 
+Ported from parent report.py.
 Orchestrates eda.py, reads quality_metrics.json and split_manifest.json,
 renders slide3_summary.md and README_eda.md.
 All comments and docstrings are in English.
@@ -10,14 +11,27 @@ File I/O uses utf-8-sig encoding.
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
+logger = logging.getLogger(__name__)
+
 # ---------------------------------------------------------------------------
-# Paths
+# Paths — sourced from config for pipeline consistency
 # ---------------------------------------------------------------------------
 
-BASE_DIR = Path(__file__).parent
-VISUALS_DIR = BASE_DIR / "visuals"
+from src.config import (  # noqa: E402
+    PROJECT_ROOT,
+    VISUALS_DIR,
+    QUALITY_METRICS_PATH,
+    SPLIT_MANIFEST_PATH,
+    EDA_TABLES_PATH,
+    SLIDE3_PATH,
+    README_EDA_PATH,
+    CLEAN_DATASET_PATH,
+)
+
+BASE_DIR = PROJECT_ROOT  # preserve original name
 
 # Expected PNG outputs — keep in sync with eda.py
 _VISUAL_CAPTIONS: dict[str, str] = {
@@ -117,7 +131,7 @@ def render_slide3(
     with open(output_path, "w", encoding="utf-8-sig") as f:
         f.write(slide)
 
-    print(f"  [report] Slide 3 summary -> {output_path}")
+    logger.info("Slide 3 summary -> %s", output_path)
 
 
 # ---------------------------------------------------------------------------
@@ -157,7 +171,7 @@ def render_readme(output_path: Path) -> None:
     with open(output_path, "w", encoding="utf-8-sig") as f:
         f.write("\n".join(lines))
 
-    print(f"  [report] README_eda -> {output_path}")
+    logger.info("README_eda -> %s", output_path)
 
 
 # ---------------------------------------------------------------------------
@@ -183,13 +197,13 @@ def verify_charts() -> list[str]:
 
 
 def run_report_pipeline(
-    metrics_path: str | Path = BASE_DIR / "quality_metrics.json",
-    manifest_path: str | Path = BASE_DIR / "split_manifest.json",
-    eda_tables_path: str | Path = BASE_DIR / "eda_tables.json",
-    slide3_path: str | Path = BASE_DIR / "slide3_summary.md",
-    readme_path: str | Path = BASE_DIR / "README_eda.md",
+    metrics_path: str | Path = QUALITY_METRICS_PATH,
+    manifest_path: str | Path = SPLIT_MANIFEST_PATH,
+    eda_tables_path: str | Path = EDA_TABLES_PATH,
+    slide3_path: str | Path = SLIDE3_PATH,
+    readme_path: str | Path = README_EDA_PATH,
     run_eda: bool = True,
-    eda_input: str | Path = BASE_DIR / "dataset1240.clean.json",
+    eda_input: str | Path = CLEAN_DATASET_PATH,
 ) -> None:
     """
     Full report generation: optionally re-run EDA, then render docs.
@@ -198,18 +212,18 @@ def run_report_pipeline(
     run_eda=False: assumes charts already exist (faster for re-runs).
     """
     if run_eda:
-        print("[report] Running EDA pipeline …")
-        from eda import run_eda_pipeline
+        logger.info("Running EDA pipeline …")
+        from src.eda import run_eda_pipeline
         run_eda_pipeline(input_path=eda_input, tables_path=eda_tables_path)
 
     # Check charts
     missing = verify_charts()
     if missing:
-        print(f"\n  [WARN] Missing or tiny chart files: {missing}")
+        logger.warning("Missing or tiny chart files: %s", missing)
     else:
-        print(f"\n  [OK] All {len(_VISUAL_CAPTIONS)} chart files present and non-empty.")
+        logger.info("All %d chart files present and non-empty.", len(_VISUAL_CAPTIONS))
 
-    print("\n[report] Rendering docs …")
+    logger.info("Rendering docs …")
     render_slide3(
         metrics_path=Path(metrics_path),
         manifest_path=Path(manifest_path),
@@ -218,9 +232,9 @@ def run_report_pipeline(
     )
     render_readme(output_path=Path(readme_path))
 
-    print("\n[report] Done.")
-    print(f"  slide3_summary.md -> {slide3_path}")
-    print(f"  README_eda.md     -> {readme_path}")
+    logger.info("Done.")
+    logger.info("slide3_summary.md -> %s", slide3_path)
+    logger.info("README_eda.md     -> %s", readme_path)
 
 
 # ---------------------------------------------------------------------------
@@ -231,17 +245,17 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Generate Week 9 interim report artifacts")
-    parser.add_argument("--metrics", default=str(BASE_DIR / "quality_metrics.json"))
-    parser.add_argument("--manifest", default=str(BASE_DIR / "split_manifest.json"))
-    parser.add_argument("--tables", default=str(BASE_DIR / "eda_tables.json"))
-    parser.add_argument("--slide3", default=str(BASE_DIR / "slide3_summary.md"))
-    parser.add_argument("--readme", default=str(BASE_DIR / "README_eda.md"))
+    parser.add_argument("--metrics", default=str(QUALITY_METRICS_PATH))
+    parser.add_argument("--manifest", default=str(SPLIT_MANIFEST_PATH))
+    parser.add_argument("--tables", default=str(EDA_TABLES_PATH))
+    parser.add_argument("--slide3", default=str(SLIDE3_PATH))
+    parser.add_argument("--readme", default=str(README_EDA_PATH))
     parser.add_argument(
         "--no-eda",
         action="store_true",
         help="Skip EDA chart regeneration (use existing visuals/)",
     )
-    parser.add_argument("--eda-input", default=str(BASE_DIR / "dataset1240.clean.json"))
+    parser.add_argument("--eda-input", default=str(CLEAN_DATASET_PATH))
     args = parser.parse_args()
 
     run_report_pipeline(

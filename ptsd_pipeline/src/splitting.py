@@ -1,6 +1,7 @@
 """
-split.py — Multi-label stratified train/test split for PTSD Hebrew slang dataset.
+splitting.py — Multi-label stratified train/test split for PTSD Hebrew slang dataset.
 
+Ported from parent split.py.
 Uses Iterative Stratification (Sechidis et al., 2011) via scikit-multilearn.
 All comments and docstrings are in English.
 File I/O uses utf-8-sig encoding.
@@ -9,6 +10,7 @@ File I/O uses utf-8-sig encoding.
 from __future__ import annotations
 
 import json
+import logging
 import sys
 from pathlib import Path
 
@@ -23,13 +25,25 @@ try:
 except ImportError:
     _SKMULTILEARN_AVAILABLE = False
 
+logger = logging.getLogger(__name__)
+
 # ---------------------------------------------------------------------------
-# Constants
+# Constants — paths sourced from config for pipeline consistency
 # ---------------------------------------------------------------------------
 
-SEED = 1240
-TEST_SIZE = 0.25  # 75/25 split
-BASE_DIR = Path(__file__).parent
+from src.config import (  # noqa: E402
+    PROJECT_ROOT,
+    CLEAN_DATASET_PATH,
+    TRAIN_DATASET_PATH,
+    TEST_DATASET_PATH,
+    SPLIT_MANIFEST_PATH,
+    STRAT_SEED,
+    STRAT_TEST_SIZE,
+)
+
+SEED = STRAT_SEED
+TEST_SIZE = STRAT_TEST_SIZE  # 75/25 split
+BASE_DIR = PROJECT_ROOT  # preserve original name
 
 # Sanity gate tolerances (plan §3.4)
 _TRAIN_SHARE_MIN = 0.65
@@ -131,10 +145,9 @@ def _run_sanity_gates(
         msg = "\n".join(errors)
         raise RuntimeError(f"Sanity gates failed:\n{msg}")
 
-    print(
-        f"  [SANITY OK] All gates passed. "
-        f"JS divergence={js:.4f}  "
-        f"Train share range=[{train_sums/(train_sums+test_sums+1e-12)}]"
+    logger.info(
+        "[SANITY OK] All gates passed. JS divergence=%.4f  Train share range=[%s]",
+        js, train_sums / (train_sums + test_sums + 1e-12),
     )
     return js
 
@@ -145,10 +158,10 @@ def _run_sanity_gates(
 
 
 def run_split_pipeline(
-    input_path: str | Path = BASE_DIR / "dataset1240.clean.json",
-    train_path: str | Path = BASE_DIR / "train_dataset.json",
-    test_path: str | Path = BASE_DIR / "test_dataset.json",
-    manifest_path: str | Path = BASE_DIR / "split_manifest.json",
+    input_path: str | Path = CLEAN_DATASET_PATH,
+    train_path: str | Path = TRAIN_DATASET_PATH,
+    test_path: str | Path = TEST_DATASET_PATH,
+    manifest_path: str | Path = SPLIT_MANIFEST_PATH,
 ) -> dict:
     """
     Iterative-stratification 75/25 split preserving all original keys.
@@ -161,14 +174,14 @@ def run_split_pipeline(
     """
     input_path = Path(input_path)
     if not input_path.exists():
-        fallback = BASE_DIR / "dataset1240.json"
-        print(f"  [WARN] {input_path.name} not found, falling back to {fallback.name}")
+        fallback = BASE_DIR / "data" / "dataset.json"
+        logger.warning("%s not found, falling back to %s", input_path.name, fallback.name)
         input_path = fallback
 
     with open(input_path, encoding="utf-8-sig") as f:
         dataset: list[dict] = json.load(f)
 
-    print(f"\n[split] Loaded {len(dataset)} records from {input_path.name}")
+    logger.info("Loaded %d records from %s", len(dataset), input_path.name)
 
     # Inject __NEG__ for empty-label rows before binarization
     augmented_labels = [
@@ -183,7 +196,7 @@ def run_split_pipeline(
     indices = np.arange(len(dataset)).reshape(-1, 1)
 
     if _SKMULTILEARN_AVAILABLE:
-        print(f"  Using iterative_train_test_split (scikit-multilearn), seed={SEED}")
+        logger.info("Using iterative_train_test_split (scikit-multilearn), seed=%d", SEED)
         np.random.seed(SEED)
         X_train_idx, Y_train, X_test_idx, Y_test = iterative_train_test_split(
             indices, Y, test_size=TEST_SIZE
@@ -191,8 +204,8 @@ def run_split_pipeline(
         train_indices = X_train_idx.flatten().tolist()
         test_indices = X_test_idx.flatten().tolist()
     else:
-        print(
-            "  [WARN] scikit-multilearn not installed. "
+        logger.warning(
+            "scikit-multilearn not installed. "
             "Falling back to random split — install with: pip install scikit-multilearn"
         )
         train_flat, test_flat = _random_stratified_split(
@@ -212,11 +225,11 @@ def run_split_pipeline(
     Y_test_real = Y_test[:, real_class_indices]
 
     # Run sanity gates
-    print("\n[split] Running sanity gates …")
+    logger.info("Running sanity gates …")
     try:
         js = _run_sanity_gates(Y_train_real, Y_test_real, real_classes)
     except RuntimeError as exc:
-        print(f"\n[split] ERROR: {exc}", file=sys.stderr)
+        logger.error("Sanity gates failed: %s", exc)
         raise
 
     # Build output records (restore original labels — no __NEG__ in output)
@@ -269,14 +282,13 @@ def run_split_pipeline(
     with open(manifest_path, "w", encoding="utf-8-sig") as f:
         json.dump(manifest, f, ensure_ascii=False, indent=2)
 
-    print(
-        f"\n[split] Done. "
-        f"Train={len(train_records)}  Test={len(test_records)}  "
-        f"JS={manifest['js_divergence_train_test']:.4f}"
+    logger.info(
+        "Done. Train=%d  Test=%d  JS=%.4f",
+        len(train_records), len(test_records), manifest["js_divergence_train_test"],
     )
-    print(f"  -> {train_path}")
-    print(f"  -> {test_path}")
-    print(f"  -> {manifest_path}")
+    logger.info("-> %s", train_path)
+    logger.info("-> %s", test_path)
+    logger.info("-> %s", manifest_path)
 
     return manifest
 

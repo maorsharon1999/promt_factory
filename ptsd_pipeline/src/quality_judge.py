@@ -1,7 +1,9 @@
 """
 quality_judge.py — G-Eval LLM-as-a-Judge quality filter for PTSD Hebrew slang dataset.
 
-Imports LLM infrastructure from the existing prompt factory without modifying it.
+Ported from parent quality_judge.py.
+LLM infrastructure imported directly from src.data_generation (replaces dynamic
+spec_from_file_location loading of prompt_factory1240 (1).py).
 All new comments and docstrings are in English.
 File I/O uses utf-8-sig encoding to handle Hebrew BOM headers correctly.
 """
@@ -10,30 +12,22 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
-import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
 
-# ---------------------------------------------------------------------------
-# Preserve original variable names from prompt_factory1240 (1).py
-# ---------------------------------------------------------------------------
-sys.path.insert(0, str(Path(__file__).parent))
-from importlib.util import spec_from_file_location, module_from_spec
+# Import LLM symbols from the unified data_generation module (original names preserved)
+from src.data_generation import (
+    LLMProvider,
+    LLMConfig,
+    LLMClient,
+    ResilienceLLMClient,
+    create_llm_client,
+)
 
-_FACTORY_FILE = Path(__file__).parent / "prompt_factory1240 (1).py"
-_spec = spec_from_file_location("prompt_factory1240", _FACTORY_FILE)
-_factory_mod = module_from_spec(_spec)  # type: ignore[arg-type]
-# Register before exec so @dataclass can resolve __module__ via sys.modules
-sys.modules["prompt_factory1240"] = _factory_mod
-_spec.loader.exec_module(_factory_mod)  # type: ignore[union-attr]
-
-LLMProvider = _factory_mod.LLMProvider
-LLMConfig = _factory_mod.LLMConfig
-LLMClient = _factory_mod.LLMClient
-ResilienceLLMClient = _factory_mod.ResilienceLLMClient
-create_llm_client = _factory_mod.create_llm_client
+logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -302,10 +296,10 @@ class JudgeOllamaClient:
             except Exception as exc:
                 last_exc = exc
                 wait = 5 * (attempt + 1)
-                print(f"  [judge retry {attempt+1}/3] {type(exc).__name__} — waiting {wait}s …")
+                logger.warning("judge retry %d/3 — %s: %s — waiting %ds", attempt + 1, type(exc).__name__, exc, wait)
                 time.sleep(wait)
         # Return a parse-safe ACCEPT fallback after 3 failures so pipeline continues
-        print(f"  [judge SKIP] 3 retries exhausted: {last_exc}")
+        logger.warning("judge SKIP — 3 retries exhausted: %s", last_exc)
         return '{"reasoning": "SKIP — LLM timeout after 3 retries", "failure_codes": [], "verdict": "ACCEPT"}'
 
 
@@ -457,10 +451,11 @@ def run_judge_pipeline(
             clean_records.append(enriched)
 
         if (i + 1) % 10 == 0:
-            print(
-                f"  [{i+1}/{len(dataset)}] accepted={metrics.total_accepted} "
-                f"rejected={metrics.total_rejected} rate={metrics.rejection_rate:.2%}",
-                flush=True,
+            logger.info(
+                "[%d/%d] accepted=%d rejected=%d rate=%.2f%%",
+                i + 1, len(dataset),
+                metrics.total_accepted, metrics.total_rejected,
+                metrics.rejection_rate * 100,
             )
         # Persist cache incrementally so reruns skip completed work
         _save_cache(cache, cache_path)
@@ -478,14 +473,14 @@ def run_judge_pipeline(
     with open(feedback_path, "w", encoding="utf-8-sig") as f:
         json.dump(feedback, f, ensure_ascii=False, indent=2)
 
-    print(
-        f"\n[quality_judge] Done. "
-        f"{metrics.total_accepted}/{metrics.total_generated} accepted "
-        f"({1 - metrics.rejection_rate:.1%} pass rate)."
+    logger.info(
+        "Done. %d/%d accepted (%.1f%% pass rate).",
+        metrics.total_accepted, metrics.total_generated,
+        (1 - metrics.rejection_rate) * 100,
     )
-    print(f"  Clean dataset -> {output_path}")
-    print(f"  Metrics       -> {metrics_path}")
-    print(f"  Feedback      -> {feedback_path}")
+    logger.info("Clean dataset -> %s", output_path)
+    logger.info("Metrics       -> %s", metrics_path)
+    logger.info("Feedback      -> %s", feedback_path)
 
     return metrics
 

@@ -1,7 +1,0 @@
-﻿{
-  "rejection_rate": 1.0,
-  "dominant_code": "UNNATURAL_ROBOTIC",
-  "action": "increase_temperature",
-  "recommended_temperature": 0.85,
-  "prompt_injection": null
-}
